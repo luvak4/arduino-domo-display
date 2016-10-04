@@ -31,7 +31,6 @@ void loop(){
   uint8_t buf[MSG_LEN]={0,0,0,0,0,0,0}; // empty buffer
   uint8_t buflen = MSG_LEN;             // lenght of buffer
   if (vw_get_message(buf, &buflen)){    // received a message?
-    vw_rx_stop();                       // stop radio rx
     Serial.print(buf[0],HEX);
     Serial.print("-");
     Serial.print(buf[1],HEX);
@@ -76,7 +75,5 @@ void loop(){
 	lcd.print(atoi(temp));	  
       }
     }
-    //
-    vw_rx_start();
   }
 }
