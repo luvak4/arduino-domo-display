@@ -21,7 +21,7 @@ void setup() {
   lcd.begin(20, 4);           // LCM initialize 20 cols 4 rows
   lcd.setCursor(0,0);         // LCM first row, first col
   lcd.print("Valk domotica 2016  "); // LCM message
-  Serial.begin(9600);         // serial begin and speed
+  //Serial.begin(9600);         // serial begin and speed
 }
 
 ////////////////////////////////
@@ -31,49 +31,42 @@ void loop(){
   uint8_t buf[MSG_LEN]={0,0,0,0,0,0,0}; // empty buffer
   uint8_t buflen = MSG_LEN;             // lenght of buffer
   if (vw_get_message(buf, &buflen)){    // received a message?
-    Serial.print(buf[0],HEX);
-    Serial.print("-");
-    Serial.print(buf[1],HEX);
-    Serial.print("-");
-    Serial.print(buf[2],HEX);
-    Serial.print(buf[3],HEX);
-    Serial.print(buf[4],HEX);
-    Serial.print(buf[5],HEX);
-    Serial.println(buf[6],HEX);
     //
     if (buf[0]==0xAD){
-      // attuatore
-      if (buf[1]==0x01){
-	// rele ON
-	lcd.setCursor(0,2);  
-	lcd.print("                    "); 
-	delay(200); 
-	lcd.setCursor(0,2);
-	///////////12345678901234567890
-	lcd.print("ON                  ");	  
+      vw_rx_stop();
+     // attuatore
+     if (buf[1]==0x01){
+	      // rele ON
+      	lcd.setCursor(0,2);  
+      	lcd.print("                    "); 
+      	delay(200); 
+      	lcd.setCursor(0,2);
+      	///////////12345678901234567890
+      	lcd.print("ON                  ");	  
       }
       if (buf[1]==0x02){
-	// rele OFF
-	// rele ON
-	lcd.setCursor(0,2);  
-	lcd.print("                    "); 
-	delay(200); 
-	lcd.setCursor(0,2);  
-	lcd.print("OFF                 ");	  	  
+        	// rele OFF
+        	// rele ON
+        	lcd.setCursor(0,2);  
+        	lcd.print("                    "); 
+        	delay(200); 
+        	lcd.setCursor(0,2);  
+        	lcd.print("OFF                 ");	  	  
       }
       if (buf[1]==0x03){
-	// valore analogico
-	char temp[2];
-	temp[0]=buf[2];
-	temp[1]=buf[3];
-	temp[2]=buf[4];
-	//
-	lcd.setCursor(0,1);
-	lcd.print("                    "); 
-	delay(200);
-	lcd.setCursor(0,1);        
-	lcd.print(atoi(temp));	  
+      	// valore analogico
+      	char temp[2];
+      	temp[0]=buf[2];
+      	temp[1]=buf[3];
+      	temp[2]=buf[4];
+      	//
+      	lcd.setCursor(0,1);
+      	lcd.print("                    "); 
+      	delay(200);
+      	lcd.setCursor(0,1);        
+      	lcd.print(atoi(temp));	  
       }
+      vw_rx_start();
     }
   }
 }
