@@ -16,7 +16,7 @@ LiquidCrystal lcd(RS, Enable, D4, D5, D6, D7); // LCM initialize lib
 void setup() {
   pinMode(led_pin, OUTPUT);   // led set pin
   vw_set_rx_pin(receive_pin); // radio set rx pin
-  vw_setup(2000);             // radio set speed
+  vw_setup(1000);             // radio set speed
   vw_rx_start();              // radio rx ON
   lcd.begin(20, 4);           // LCM initialize 20 cols 4 rows
   lcd.setCursor(0,0);         // LCM first row, first col
