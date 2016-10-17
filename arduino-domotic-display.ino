@@ -21,9 +21,9 @@ String caratteri;
 int INDIRIZZO=0;
 //
 byte BYTEradioDisplay[VW_MAX_MESSAGE_LEN];
-byte CIFR[]={223,205,228,240,43,146,241,/
-	     87,213,48,235,131,6,81,26,/
-	     70,34,74,224,27,111,150,22,/
+byte CIFR[]={223,205,228,240,43,146,241,//
+	     87,213,48,235,131,6,81,26,//
+	     70,34,74,224,27,111,150,22,//
 	     138,239,200,179,222,231,212};
 //
 const unsigned long mask=0x0000FFFF;
@@ -71,10 +71,10 @@ void setup() {
   lcd.createChar(SIMBluceOFF, luceOFF);  
   lcd.begin(20, 4);           // LCM initialize 20 cols 4 rows
   lcd.setCursor(0,0);         // LCM first row, first col
-  lcd.print("Valk domotica 2016  "); // LCM message
-  lcd.begin(18, 0);  
-  lcd.write(SIMBluceON);
-  lcd.write(SIMBluceOFF);
+  lcd.print("Valk domotica 2016"); // LCM message
+  //lcd.begin(18, 0);  
+  lcd.write(byte(SIMBluceON));
+  lcd.write(byte(SIMBluceOFF));
   //Serial.begin(9600);         // serial begin and speed
 }
 
@@ -90,9 +90,9 @@ void loop() {
 	BYTEradioDisplay[n]=BYTEradioDisplay[n] ^ CIFR[n];
       }
       // indirizzo
-      INDIRIZZO = BYTEradio[DISPLAYindirizzoMSB];
+      INDIRIZZO = BYTEradioDisplay[DISPLAYindirizzoMSB];
       INDIRIZZO = INDIRIZZO << 8;
-      INDIRIZZO = INDIRIZZO + BYTEradio[DISPLAYindirizzoLSB];
+      INDIRIZZO = INDIRIZZO + BYTEradioDisplay[DISPLAYindirizzoLSB];
       // se indirizzo è corretto
       if (INDIRIZZO==indirMAESTROdisplay){
 	// assembla messaggio
