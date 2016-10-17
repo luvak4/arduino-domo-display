@@ -15,8 +15,8 @@ String caratteri;
 #define indirCANTINA 1235
 #define indirMAESTROdisplay 1236
 //
-#define SIMBluceON 0
-#define SIMBluceOFF 1
+#define SIMBluceON 1
+#define SIMBluceOFF 0
 //
 int INDIRIZZO=0;
 //
