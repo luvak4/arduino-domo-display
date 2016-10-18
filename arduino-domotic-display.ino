@@ -67,9 +67,7 @@ byte luceOFF[8] = {
 ////////////////////////////////
 void setup() {
   pinMode(led_pin_rx,OUTPUT);
-  pinMode(led_pin_tx,OUTPUT);  
   digitalWrite(led_pin_rx,LOW);
-  digitalWrite(led_pin_tx,LOW);
   vw_set_rx_pin(receive_pin); 
   vw_setup(VELOCITAhi);       
   vw_rx_start();
