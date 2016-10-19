@@ -13,9 +13,9 @@ const int D5 = 6;           // LCM pin D5
 const int D6 = 7;           // LCM pin D6
 const int D7 = 8;           // LCM pin D7
 ////////////////////////////////
-// indirizzi radio
+// indirizzi radio RX
 ////////////////////////////////
-#define indirMAESTROdisplay 1236 //rx
+#define MASTRdisplay  100 // info to display
 ////////////////////////////////
 // trasmissione radio a display
 ////////////////////////////////
@@ -97,7 +97,7 @@ void loop() {
     INDIRIZZO = INDIRIZZO + BYTEradioDisplay[DISPLAYindirizzoLSB];
     // se indirizzo corretto
     switch (INDIRIZZO){
-    case indirMAESTROdisplay:
+    case MASTRdisplay:
       digitalWrite(led_pin_rx,HIGH);
       // assembla messaggio
       String msg="";
