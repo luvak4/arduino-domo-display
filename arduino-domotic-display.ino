@@ -28,10 +28,24 @@ const int D7 = 8;           // LCM pin D7
 #define VELOCITAhi          2000
 //
 byte BYTEradioDisplay[VW_MAX_MESSAGE_LEN];
-String caratteri;
-//
-#define SIMBluceON             1
-#define SIMBluceOFF            0
+String CARATTERI;
+////////////////////////////////
+// LCM
+////////////////////////////////
+// CARATTERI personalizzati
+#define SIMBluce  0
+#define SIMBtermo 1
+#define SIMBlivB  2
+#define SIMBlivC  3
+#define SIMBlivD  4
+#define SIMBlivE  5
+#define SIMBlivF  6
+#define SIMBgiu   7
+// CARATTERI interni
+#define SIMBsu    B01011110
+#define SIMBlivA  B01011111
+#define SIMBon    B01101111
+#define SIMBoff   B10100101
 //
 ////////////////////////////////
 // varie
@@ -43,25 +57,16 @@ byte CIFR[]={223,205,228,240,43,146,241,//
 const unsigned long mask=0x0000FFFF;
 int INDIRIZZO=0;
 LiquidCrystal lcd(RS, Enable, D4, D5, D6, D7); 
-byte luceON[8] = {
-  B00100,
-  B01010,
-  B10001,
-  B10101,
-  B01110,
-  B01110,
-  B00100
-};
-byte luceOFF[8] = {
-  B00100,
-  B01110,
-  B11111,
-  B11111,
-  B01110,
-  B01110,
-  B00100
-};
+byte luce[8]   = {B00100, B01010, B10001, B10101, B01110, B01110, B00100};
+byte termo[8]  = {B00100, B01010, B01010, B01010, B11011, B11111, B01110};
+byte livB[8]   = {B00000, B00000, B00000, B00000, B00000, B11111, B11111};
+byte livC[8]   = {B00000, B00000, B00000, B00000, B11111, B11111, B11111};
+byte livD[8]   = {B00000, B00000, B00000, B11111, B11111, B11111, B11111};
+byte livE[8]   = {B00000, B00000, B11111, B11111, B11111, B11111, B11111};
+byte livF[8]   = {B00000, B11111, B11111, B11111, B11111, B11111, B11111};
+byte giu[8]    = {B00000, B00000, B00000, B00000, B10001, B01010, B00100};
 
+  
 ////////////////////////////////
 // setup
 ////////////////////////////////
@@ -71,13 +76,23 @@ void setup() {
   vw_set_rx_pin(receive_pin); 
   vw_setup(VELOCITAhi);       
   vw_rx_start();
-  lcd.createChar(SIMBluceON, luceON);
-  lcd.createChar(SIMBluceOFF, luceOFF);  
+  lcd.createChar(SIMBluce, luce);
+
   lcd.begin(20, 4);           // LCM initialize 20 cols 4 rows
   lcd.setCursor(0,0);         // LCM first row, first col
-  lcd.print("Valk domotica 2016"); // LCM message
-  lcd.write(byte(SIMBluceON));
-  lcd.write(byte(SIMBluceOFF));
+  lcd.print("Valk 16 "); // LCM message
+  lcd.write(byte(SIMBluce));
+  lcd.write(byte(SIMBtermo));
+  lcd.write(byte(SIMBlivA));
+  lcd.write(byte(SIMBlivB));
+  lcd.write(byte(SIMBlivC));
+  lcd.write(byte(SIMBlivD));
+  lcd.write(byte(SIMBlivE));
+  lcd.write(byte(SIMBlivF));
+  lcd.write(byte(SIMBsu));
+  lcd.write(byte(SIMBgiu));
+  lcd.write(byte(SIMBon));
+  lcd.write(byte(SIMBoff));
   //Serial.begin(9600); // debug
 }
 
