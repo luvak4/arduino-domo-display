@@ -45,7 +45,7 @@ String CARATTERI;
 #define SIMBsu    B01011110
 #define SIMBlivA  B01011111
 #define SIMBon    B01101111
-#define SIMBoff   B10100101
+#define SIMBoff   'x'
 //
 ////////////////////////////////
 // varie
@@ -77,6 +77,13 @@ void setup() {
   vw_setup(VELOCITAhi);       
   vw_rx_start();
   lcd.createChar(SIMBluce, luce);
+  lcd.createChar(SIMBtermo, termo);
+  lcd.createChar(SIMBlivB, livB);
+  lcd.createChar(SIMBlivC, livC);
+  lcd.createChar(SIMBlivD, livD);
+  lcd.createChar(SIMBlivE, livE);
+  lcd.createChar(SIMBlivF, livF);
+  lcd.createChar(SIMBgiu, giu);
 
   lcd.begin(20, 4);           // LCM initialize 20 cols 4 rows
   lcd.setCursor(0,0);         // LCM first row, first col
