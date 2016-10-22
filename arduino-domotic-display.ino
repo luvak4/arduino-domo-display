@@ -1,3 +1,6 @@
+////////////////////////////////
+// DISPLAY
+////////////////////////////////
 #include <VirtualWire.h>   // load virtual-wire library
 #include <LiquidCrystal.h> // load LCM library
 ////////////////////////////////
@@ -44,8 +47,8 @@ String CARATTERI;
 // CARATTERI interni
 #define SIMBsu    B01011110
 #define SIMBlivA  B01011111
-#define SIMBon    B01101111
-#define SIMBoff   'x'
+#define SIMBon    255
+#define SIMBoff   252
 //
 ////////////////////////////////
 // varie
@@ -101,6 +104,16 @@ void setup() {
   lcd.write(byte(SIMBon));
   lcd.write(byte(SIMBoff));
   //Serial.begin(9600); // debug
+  /*
+  byte n=240;
+  for (byte m=0;m<4;m++){
+  lcd.setCursor(0,m);
+    for (byte o=0;o<20;o++){
+      lcd.write(n);
+      n++;
+    }
+  }
+  */
 }
 
 void loop() {
@@ -122,14 +135,34 @@ void loop() {
     case MASTRdisplay:
       digitalWrite(led_pin_rx,HIGH);
       // assembla messaggio
-      String msg="";
+      // su display: partenza
+      lcd.setCursor(BYTEradioDisplay[DISPLAYcolonna],BYTEradioDisplay[DISPLAYriga]);
+      // pulizia display che miserve anche per
+      // avere una idea dei messaggi quando sono
+      // identici e vengono ricopiati
+      for (int n=0; n<BYTEradioDisplay[DISPLAYnCaratteri];n++){
+      lcd.write(" ");
+      }
+      delay(200);
+      // scrivo i dati
+            lcd.setCursor(BYTEradioDisplay[DISPLAYcolonna],BYTEradioDisplay[DISPLAYriga]);
+      
       for (int n=0; n<BYTEradioDisplay[DISPLAYnCaratteri];n++){
 	char t=BYTEradioDisplay[n+DISPLAYinizioTesto];
-	msg=msg+t;
+  // riduzione incremento dovuto a stringatx che non
+  // puo trasmettere carattere 0
+  switch(t){    
+    case char(1): t=char(SIMBluce);break;
+    case char(2): t=char(SIMBtermo);break;
+    case char(3): t=char(SIMBlivB);break;
+    case char(4): t=char(SIMBlivC);break;
+    case char(5): t=char(SIMBlivD);break;
+    case char(6): t=char(SIMBlivE);break;
+    case char(7): t=char(SIMBlivF);break;
+    case char(8): t=char(SIMBgiu);break;
+  }
+	lcd.write(t);
       }
-      // su display
-      lcd.setCursor(BYTEradioDisplay[DISPLAYcolonna],BYTEradioDisplay[DISPLAYriga]);
-      lcd.print(msg);
       delay(100);
       digitalWrite(led_pin_rx,LOW);    
       break;
