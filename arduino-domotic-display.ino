@@ -1,11 +1,32 @@
 ////////////////////////////////
 // DISPLAY
 ////////////////////////////////
+/*
+
+         	 +------------+      +--------------------------+
+        	 |     	      |      | display LCM 44780        |
+        	 |     	      |      |    D4 D5 D6 D7  RS EN    |
+        	 |     	      |      +----+--+--+--+---+--+-----+
+         	 |     	      |		  |  |  |  |   |  |
+        	 |          5 |-----------+  |  |  |   |  |
+		 |          6 |--------------+  |  |   |  |
+		 |          7 |-----------------+  |   |  |
+		 |          8 |--------------------+   |  |
+		 |          9 |------------------------+  |
+    radio rx --->|         10 |---------------------------+
+	    	 |            |
+		 +------------+
+                    ARDUINO
+                   ATMEGA 328
+*/
+/*
+* configurazioni
+*/
 #include <VirtualWire.h>   // load virtual-wire library
 #include <LiquidCrystal.h> // load LCM library
-////////////////////////////////
-// pins
-////////////////////////////////
+/*
+** pins
+*/
 const int led_pin_rx = 13;  // led pin
 const int receive_pin = 11; // radio rx pin
 const int MSG_LEN = 7;      // radio max message lenght
@@ -15,13 +36,26 @@ const int D4 = 5;           // LCM pin D4
 const int D5 = 6;           // LCM pin D5
 const int D6 = 7;           // LCM pin D6
 const int D7 = 8;           // LCM pin D7
-////////////////////////////////
-// indirizzi radio RX
-////////////////////////////////
+/*
+** messaggi (IN)
+*/
 #define MASTRdisplay  100 // info to display
-////////////////////////////////
-// trasmissione radio a display
-////////////////////////////////
+/*
+** LCM
+*/
+LiquidCrystal lcd(RS, Enable, D4, D5, D6, D7);
+byte luce[8]   = {B00100, B01010, B10001, B10101, B01110, B01110, B00100};
+byte termo[8]  = {B00100, B01010, B01010, B01010, B11011, B11111, B01110};
+byte livB[8]   = {B00000, B00000, B00000, B00000, B00000, B11111, B11111};
+byte livC[8]   = {B00000, B00000, B00000, B00000, B11111, B11111, B11111};
+byte livD[8]   = {B00000, B00000, B00000, B11111, B11111, B11111, B11111};
+byte livE[8]   = {B00000, B00000, B11111, B11111, B11111, B11111, B11111};
+byte livF[8]   = {B00000, B11111, B11111, B11111, B11111, B11111, B11111};
+byte giu[8]    = {B00000, B00000, B00000, B00000, B10001, B01010, B00100};
+//
+byte BYTEradioDisplay[VW_MAX_MESSAGE_LEN];
+String CARATTERI;
+// trasmissione radio
 #define DISPLAYindirizzoLSB    0
 #define DISPLAYindirizzoMSB    1
 #define DISPLAYcolonna         2
@@ -29,12 +63,6 @@ const int D7 = 8;           // LCM pin D7
 #define DISPLAYnCaratteri      4
 #define DISPLAYinizioTesto     5
 #define VELOCITAhi          2000
-//
-byte BYTEradioDisplay[VW_MAX_MESSAGE_LEN];
-String CARATTERI;
-////////////////////////////////
-// LCM
-////////////////////////////////
 // CARATTERI personalizzati
 #define SIMBluce  0
 #define SIMBtermo 1
@@ -44,40 +72,29 @@ String CARATTERI;
 #define SIMBlivE  5
 #define SIMBlivF  6
 #define SIMBgiu   7
-// CARATTERI interni
+// CARATTERI interni (cambiano secondo il display)
 #define SIMBsu    B01011110
 #define SIMBlivA  B01011111
 #define SIMBon    255
 #define SIMBoff   252
+/*
+** varie
+*/
 //
-////////////////////////////////
-// varie
-////////////////////////////////
 byte CIFR[]={223,205,228,240,43,146,241,//
 	     87,213,48,235,131,6,81,26,//
 	     70,34,74,224,27,111,150,22,//
 	     138,239,200,179,222,231,212};
 const unsigned long mask=0x0000FFFF;
 int INDIRIZZO=0;
-LiquidCrystal lcd(RS, Enable, D4, D5, D6, D7); 
-byte luce[8]   = {B00100, B01010, B10001, B10101, B01110, B01110, B00100};
-byte termo[8]  = {B00100, B01010, B01010, B01010, B11011, B11111, B01110};
-byte livB[8]   = {B00000, B00000, B00000, B00000, B00000, B11111, B11111};
-byte livC[8]   = {B00000, B00000, B00000, B00000, B11111, B11111, B11111};
-byte livD[8]   = {B00000, B00000, B00000, B11111, B11111, B11111, B11111};
-byte livE[8]   = {B00000, B00000, B11111, B11111, B11111, B11111, B11111};
-byte livF[8]   = {B00000, B11111, B11111, B11111, B11111, B11111, B11111};
-byte giu[8]    = {B00000, B00000, B00000, B00000, B10001, B01010, B00100};
-
-  
-////////////////////////////////
-// setup
-////////////////////////////////
+/*
+* setup()
+/*
 void setup() {
   pinMode(led_pin_rx,OUTPUT);
   digitalWrite(led_pin_rx,LOW);
-  vw_set_rx_pin(receive_pin); 
-  vw_setup(VELOCITAhi);       
+  vw_set_rx_pin(receive_pin);
+  vw_setup(VELOCITAhi);
   vw_rx_start();
   lcd.createChar(SIMBluce, luce);
   lcd.createChar(SIMBtermo, termo);
@@ -115,11 +132,16 @@ void setup() {
   }
   */
 }
-
+/*
+* loop()
+*/
 void loop() {
   uint8_t buf[VW_MAX_MESSAGE_LEN];
   uint8_t buflen = VW_MAX_MESSAGE_LEN;
   //
+/*
+** radio rx
+*/
   if (vw_get_message(BYTEradioDisplay, &buflen)){
     vw_rx_stop();
     // decifratura messaggio XOR
@@ -146,12 +168,12 @@ void loop() {
       delay(200);
       // scrivo i dati
             lcd.setCursor(BYTEradioDisplay[DISPLAYcolonna],BYTEradioDisplay[DISPLAYriga]);
-      
+
       for (int n=0; n<BYTEradioDisplay[DISPLAYnCaratteri];n++){
 	char t=BYTEradioDisplay[n+DISPLAYinizioTesto];
   // riduzione incremento dovuto a stringatx che non
   // puo trasmettere carattere 0
-  switch(t){    
+  switch(t){
     case char(1): t=char(SIMBluce);break;
     case char(2): t=char(SIMBtermo);break;
     case char(3): t=char(SIMBlivB);break;
@@ -164,7 +186,7 @@ void loop() {
 	lcd.write(t);
       }
       delay(100);
-      digitalWrite(led_pin_rx,LOW);    
+      digitalWrite(led_pin_rx,LOW);
       break;
     }
     vw_rx_start();
