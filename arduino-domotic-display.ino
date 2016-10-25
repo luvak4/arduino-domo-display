@@ -3,28 +3,28 @@
 ////////////////////////////////
 /*
 
-         	 +------------+      +--------------------------+
-        	 |     	      |      | display LCM 44780        |
-        	 |     	      |      |    D4 D5 D6 D7  RS EN    |
-        	 |     	      |      +----+--+--+--+---+--+-----+
-         	 |     	      |		  |  |  |  |   |  |
-        	 |          5 |-----------+  |  |  |   |  |
-		 |          6 |--------------+  |  |   |  |
-		 |          7 |-----------------+  |   |  |
-		 |          8 |--------------------+   |  |
-		 |          9 |------------------------+  |
+                 +------------+      +--------------------------+
+                 |     	      |      | display LCM 44780        |
+                 |     	      |      |    D4 D5 D6 D7  RS EN    |
+                 |     	      |      +----+--+--+--+---+--+-----+
+                 |     	      |		  |  |  |  |   |  |
+                 |          5 |-----------+  |  |  |   |  |
+                 |          6 |--------------+  |  |   |  |
+                 |          7 |-----------------+  |   |  |
+                 |          8 |--------------------+   |  |
+                 |          9 |------------------------+  |
     radio rx --->|         10 |---------------------------+
-	    	 |            |
-		 +------------+
+                 |            |
+                 +------------+
                     ARDUINO
                    ATMEGA 328
 */
-/*
+/*--------------------------------
 * configurazioni
 */
 #include <VirtualWire.h>   // load virtual-wire library
 #include <LiquidCrystal.h> // load LCM library
-/*
+/*--------------------------------
 ** pins
 */
 const int led_pin_rx = 13;  // led pin
@@ -36,11 +36,11 @@ const int D4 = 5;           // LCM pin D4
 const int D5 = 6;           // LCM pin D5
 const int D6 = 7;           // LCM pin D6
 const int D7 = 8;           // LCM pin D7
-/*
+/*--------------------------------
 ** messaggi (IN)
 */
 #define MASTRdisplay  100 // info to display
-/*
+/*--------------------------------
 ** LCM
 */
 LiquidCrystal lcd(RS, Enable, D4, D5, D6, D7);
@@ -77,7 +77,7 @@ String CARATTERI;
 #define SIMBlivA  B01011111
 #define SIMBon    255
 #define SIMBoff   252
-/*
+/*--------------------------------
 ** varie
 */
 //
@@ -87,59 +87,59 @@ byte CIFR[]={223,205,228,240,43,146,241,//
 	     138,239,200,179,222,231,212};
 const unsigned long mask=0x0000FFFF;
 int INDIRIZZO=0;
-/*
+/*////////////////////////////////
 * setup()
-/*
-void setup() {
-  pinMode(led_pin_rx,OUTPUT);
-  digitalWrite(led_pin_rx,LOW);
-  vw_set_rx_pin(receive_pin);
-  vw_setup(VELOCITAhi);
-  vw_rx_start();
-  lcd.createChar(SIMBluce, luce);
-  lcd.createChar(SIMBtermo, termo);
-  lcd.createChar(SIMBlivB, livB);
-  lcd.createChar(SIMBlivC, livC);
-  lcd.createChar(SIMBlivD, livD);
-  lcd.createChar(SIMBlivE, livE);
-  lcd.createChar(SIMBlivF, livF);
-  lcd.createChar(SIMBgiu, giu);
+*/
+ void setup() {
+ pinMode(led_pin_rx,OUTPUT);
+ digitalWrite(led_pin_rx,LOW);
+ vw_set_rx_pin(receive_pin);
+ vw_setup(VELOCITAhi);
+ vw_rx_start();
+ lcd.createChar(SIMBluce, luce);
+ lcd.createChar(SIMBtermo, termo);
+ lcd.createChar(SIMBlivB, livB);
+ lcd.createChar(SIMBlivC, livC);
+ lcd.createChar(SIMBlivD, livD);
+ lcd.createChar(SIMBlivE, livE);
+ lcd.createChar(SIMBlivF, livF);
+ lcd.createChar(SIMBgiu, giu);
 
-  lcd.begin(20, 4);           // LCM initialize 20 cols 4 rows
-  lcd.setCursor(0,0);         // LCM first row, first col
-  lcd.print("Valk 16 "); // LCM message
-  lcd.write(byte(SIMBluce));
-  lcd.write(byte(SIMBtermo));
-  lcd.write(byte(SIMBlivA));
-  lcd.write(byte(SIMBlivB));
-  lcd.write(byte(SIMBlivC));
-  lcd.write(byte(SIMBlivD));
-  lcd.write(byte(SIMBlivE));
-  lcd.write(byte(SIMBlivF));
-  lcd.write(byte(SIMBsu));
-  lcd.write(byte(SIMBgiu));
-  lcd.write(byte(SIMBon));
-  lcd.write(byte(SIMBoff));
-  //Serial.begin(9600); // debug
-  /*
-  byte n=240;
-  for (byte m=0;m<4;m++){
-  lcd.setCursor(0,m);
-    for (byte o=0;o<20;o++){
-      lcd.write(n);
-      n++;
-    }
-  }
-  */
+ lcd.begin(20, 4);           // LCM initialize 20 cols 4 rows
+ lcd.setCursor(0,0);         // LCM first row, first col
+ lcd.print("Valk 16 "); // LCM message
+ lcd.write(byte(SIMBluce));
+ lcd.write(byte(SIMBtermo));
+ lcd.write(byte(SIMBlivA));
+ lcd.write(byte(SIMBlivB));
+ lcd.write(byte(SIMBlivC));
+ lcd.write(byte(SIMBlivD));
+ lcd.write(byte(SIMBlivE));
+ lcd.write(byte(SIMBlivF));
+ lcd.write(byte(SIMBsu));
+ lcd.write(byte(SIMBgiu));
+ lcd.write(byte(SIMBon));
+ lcd.write(byte(SIMBoff));
+ //Serial.begin(9600); // debug
+ /*
+ byte n=240;
+ for (byte m=0;m<4;m++){
+ lcd.setCursor(0,m);
+ for (byte o=0;o<20;o++){
+ lcd.write(n);
+ n++;
+ }
+ }
+*/
 }
-/*
+/*////////////////////////////////
 * loop()
 */
 void loop() {
   uint8_t buf[VW_MAX_MESSAGE_LEN];
   uint8_t buflen = VW_MAX_MESSAGE_LEN;
-  //
-/*
+//
+/*--------------------------------
 ** radio rx
 */
   if (vw_get_message(BYTEradioDisplay, &buflen)){
@@ -163,26 +163,26 @@ void loop() {
       // avere una idea dei messaggi quando sono
       // identici e vengono ricopiati
       for (int n=0; n<BYTEradioDisplay[DISPLAYnCaratteri];n++){
-      lcd.write(" ");
+	lcd.write(" ");
       }
       delay(200);
       // scrivo i dati
-            lcd.setCursor(BYTEradioDisplay[DISPLAYcolonna],BYTEradioDisplay[DISPLAYriga]);
+      lcd.setCursor(BYTEradioDisplay[DISPLAYcolonna],BYTEradioDisplay[DISPLAYriga]);
 
       for (int n=0; n<BYTEradioDisplay[DISPLAYnCaratteri];n++){
 	char t=BYTEradioDisplay[n+DISPLAYinizioTesto];
-  // riduzione incremento dovuto a stringatx che non
-  // puo trasmettere carattere 0
-  switch(t){
-    case char(1): t=char(SIMBluce);break;
-    case char(2): t=char(SIMBtermo);break;
-    case char(3): t=char(SIMBlivB);break;
-    case char(4): t=char(SIMBlivC);break;
-    case char(5): t=char(SIMBlivD);break;
-    case char(6): t=char(SIMBlivE);break;
-    case char(7): t=char(SIMBlivF);break;
-    case char(8): t=char(SIMBgiu);break;
-  }
+	// riduzione incremento dovuto a stringatx che non
+	// puo trasmettere carattere 0
+	switch(t){
+	case char(1): t=char(SIMBluce);break;
+	case char(2): t=char(SIMBtermo);break;
+	case char(3): t=char(SIMBlivB);break;
+	case char(4): t=char(SIMBlivC);break;
+	case char(5): t=char(SIMBlivD);break;
+	case char(6): t=char(SIMBlivE);break;
+	case char(7): t=char(SIMBlivF);break;
+	case char(8): t=char(SIMBgiu);break;
+	}
 	lcd.write(t);
       }
       delay(100);
