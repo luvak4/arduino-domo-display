@@ -1,3 +1,3 @@
 # arduino-domotic-display
 
-(sviluppo terminato) cercare nel repository https://github.com/luvak4/arduino-domo
+repository chiuso. Cercare nel nuovo: https://github.com/luvak4/arduino-domo
